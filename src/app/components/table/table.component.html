@@ -1,0 +1,27 @@
+@if (produtos$ | async; as produtos) {
+  <table mat-table [dataSource]="produtos.content" class="mat-elevation-z8">
+  
+    <ng-container matColumnDef="Nome">
+      <th mat-header-cell *matHeaderCellDef> Nome </th>
+      <td mat-cell *matCellDef="let produto"> {{produto.nome}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="Estoque">
+      <th mat-header-cell *matHeaderCellDef> Estoque </th>
+      <td mat-cell *matCellDef="let produto"> {{produto.estoque}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Ações">
+      <th mat-header-cell *matHeaderCellDef> Ações </th>
+      <td mat-cell *matCellDef="let produto"> @if(produto.disponivel){
+        <button>Comprar</button>
+      } @else {<p>Produto Indisponivel</p>} </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+    <tr mat-row *matRowDef="let row; columns: colunas;"></tr>
+  </table>
+}
+@else(){
+  <h1>Carregando...</h1>
+}
