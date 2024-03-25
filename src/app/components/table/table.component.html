@@ -1,5 +1,5 @@
-@if (produtos$ | async; as produtos) {
-  <table mat-table [dataSource]="produtos.content" class="mat-elevation-z8">
+@if (!loading()) {
+  <table mat-table [dataSource]="produtos" class="mat-elevation-z8">
   
     <ng-container matColumnDef="Nome">
       <th mat-header-cell *matHeaderCellDef> Nome </th>

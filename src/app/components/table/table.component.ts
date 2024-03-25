@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import {MatTableModule} from '@angular/material/table';
 import { ProdutoService } from '../../services/produto.service';
 import { Produto } from '../../interfaces/produto.interface';
@@ -19,14 +19,19 @@ import { AsyncPipe } from '@angular/common';
 })
 export class TableComponent {
 
-  produtos$: Observable<ProdutoPage>;
+  produtos: Produto[] = [];
+  loading = signal(false)
   colunas: string[] = ["Nome", "Estoque", "Ações"]
 
   constructor(private service: ProdutoService){
-    this.produtos$ = this.service.getProdutos();
+    this.refresh();
   }
 
   refresh(){
-    this.produtos$ = this.service.getProdutos();
+    this.loading.set(true)
+    this.service.getProdutos().then((response) => {
+      this.produtos = response
+      this.loading.set(false)
+    });
   }
 }
