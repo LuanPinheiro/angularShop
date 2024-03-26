@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ProdutoPage} from '../interfaces/produtoPage.interface';
 import { Produto } from '../interfaces/produto.interface';
-import axios from "./axios";
+import API from "./axios";
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +12,12 @@ export class ProdutoService {
 
   private endpointUrl = "/produtos"
   
-
   constructor(){}
 
   getProdutos(): Promise<Produto[]>{
-    return axios.get<ProdutoPage>(this.endpointUrl).then((response)=> {
-      return response.data.content.map((produto: { nome: any; estoque: any; disponivel: any; }) => <Produto> {
+    return API.get<ProdutoPage>(this.endpointUrl).then((response)=> {
+      return response.data.content.map((produto: { id: any; nome: any; estoque: any; disponivel: any; }) => <Produto> {
+        id: produto.id,
         nome: produto.nome,
         estoque: produto.estoque,
         disponivel: produto.disponivel
@@ -25,7 +25,24 @@ export class ProdutoService {
     });
   }
 
-  postProduto(produto: Produto){
-    return axios.post(this.endpointUrl, produto);
+  saveProduto(produto: Partial<Produto>){
+    if(produto.id){
+      return this.updateProduto(produto);
+    }
+    return this.createProduto(produto);
+  }
+
+  createProduto(produto: Partial<Produto>){
+    return API.post(this.endpointUrl, produto);
+  }
+
+  updateProduto(produto: Partial<Produto>){
+    return API.put(this.endpointUrl, produto, {params: {
+      id: produto.id
+    }});
+  }
+
+  deleteProduto(id: any) {
+    return API.delete(this.endpointUrl, {params: { id }});
   }
 }
